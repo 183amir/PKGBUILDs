@@ -1,0 +1,19 @@
+# Maintainer: Amir Mohammadi <183.amir@gmail.com>
+pkgname=python-khayyam
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Khayyam is a library to use date & time in persian style (known as Jalali calendar or khayyam alg)"
+arch=('any')
+url="https://pypi.python.org/pypi/Khayyam"
+license=('GPLv3')
+depends=('python')
+makedepends=('python-pip')
+source=($pkgname-$pkgver.tar.gz::https://pypi.python.org/packages/source/K/Khayyam/Khayyam-$pkgver.tar.gz)
+md5sums=('9ba9ffb668ab2fe20ed6bd4f2027bc2b')
+
+package() {
+  cd "$srcdir/Khayyam-$pkgver"
+  python3 setup.py install --root="$pkgdir/" --optimize=1
+}
+
+# vim:set ts=2 sw=2 et:
