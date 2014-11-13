@@ -8,17 +8,17 @@ url="http://183amir.github.io/persian-calendar/"
 license=('GPLv2')
 depends=('python' 'python-khayyam' 'libappindicator-gtk3')
 source=($pkgname-$pkgver.tar.gz::https://github.com/183amir/$pkgname/archive/v$pkgver.tar.gz)
-md5sums=('2b784baf027f6800a14badd9d7186fa7')
+md5sums=('SKIP')
 
 package() {
 	mkdir -p "$pkgdir/opt/persian-calendar"
 	chmod 775 "$pkgdir/opt/persian-calendar"
-	cp -r $srcdir/$pkgname-$pkgver/* "$pkgdir/opt/persian-calendar"
+	cp -r $srcdir/* "$pkgdir/opt/persian-calendar"
 
-	install -Dm644 "$srcdir/$pkgname-$pkgver"/data/persian-calendar.desktop "$pkgdir"/usr/share/applications/persian-calendar.desktop
-	install -Dm644 "$srcdir/$pkgname-$pkgver"/data/icons/days/persian-calendar-dark-theme-8.png "$pkgdir"/usr/share/pixmaps/persian-calendar.png
-	install -Dm644 "$srcdir/$pkgname-$pkgver"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
-	install -Dm644 "$srcdir/$pkgname-$pkgver"/data/icons/days/* "$pkgdir"/usr/share/pixmaps/
+	install -Dm644 "$srcdir"/data/persian-calendar.desktop "$pkgdir"/usr/share/applications/persian-calendar.desktop
+	install -Dm644 "$srcdir"/data/icons/days/persian-calendar-dark-theme-8.png "$pkgdir"/usr/share/pixmaps/persian-calendar.png
+	install -Dm644 "$srcdir"/data/icons/days/* "$pkgdir"/usr/share/pixmaps/
+	install -Dm644 "$srcdir"/LICENSE "$pkgdir"/usr/share/licenses/"$pkgname"/LICENSE
 
 	# remove unnecessary files
 	rm -r "$pkgdir"/opt/persian-calendar/data/icons/days

@@ -9,7 +9,7 @@ license=('GPLv3')
 depends=('python')
 makedepends=('python-pip')
 source=($pkgname-$pkgver.tar.gz::https://pypi.python.org/packages/source/K/Khayyam/Khayyam-$pkgver.tar.gz)
-md5sums=('9ba9ffb668ab2fe20ed6bd4f2027bc2b')
+md5sums=('469117008a88a1d82c853dd4bec586f1')
 
 package() {
   cd "$srcdir/Khayyam-$pkgver"
