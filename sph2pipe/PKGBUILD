@@ -1,0 +1,59 @@
+# This is an example PKGBUILD file. Use this as a start to creating your own,
+# and remove these comments. For more information, see 'man PKGBUILD'.
+# NOTE: Please fill out the license field for your package! If it is unknown,
+# then please put 'unknown'.
+
+# Maintainer: Your Name <youremail@domain.com>
+pkgname=sph2pipe
+pkgver=2.5
+pkgrel=1
+epoch=
+pkgdesc="The 'sph2pipe' program was created by the Linguistic Data Consortium
+to provide greater flexibility and ease of use for SPHERE-formatted
+digital audio data."
+arch=(any)
+url="https://www.ldc.upenn.edu/language-resources/tools/sphere-conversion-tools"
+license=('custom')
+groups=()
+depends=()
+makedepends=()
+checkdepends=()
+optdepends=()
+provides=()
+conflicts=()
+replaces=()
+backup=()
+options=()
+install=
+changelog=
+source=(https://www.ldc.upenn.edu/sites/www.ldc.upenn.edu/files/ctools/"$pkgname"_v"$pkgver".tar.gz
+		test_all.patch)
+noextract=()
+md5sums=('771d9143e9aec0a22c6a14e138974be2'
+         '279be062c8ba58ccad8d53c36866dd37') #generate with 'makepkg -g'
+
+prepare() {
+	cd "$srcdir/"$pkgname"_v"$pkgver"/test"
+	patch test_all.pl $srcdir/test_all.patch
+	# patch -p1 -i "$srcdir/$pkgname-$pkgver.patch"
+}
+
+build() {
+	cd "$srcdir/"$pkgname"_v"$pkgver""
+	gcc -o sph2pipe *.c -lm
+	# ./configure --prefix=/usr
+	# make
+}
+
+check() {
+	cd "$srcdir/"$pkgname"_v"$pkgver"/test"
+	./test_all.pl || die
+	# make -k check
+}
+
+package() {
+	cd "$srcdir/"$pkgname"_v"$pkgver""
+	mkdir -p "$pkgdir"/usr/bin/
+	install -T -m755 sph2pipe "$pkgdir"/usr/bin/sph2pipe
+	# make DESTDIR="$pkgdir/" install
+}

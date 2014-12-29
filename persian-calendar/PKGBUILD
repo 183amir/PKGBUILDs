@@ -1,6 +1,6 @@
 # Maintainer: Amir Mohammadi <183.amir@gmail.com>
 pkgname=persian-calendar
-pkgver=3.2
+pkgver=3.2.3
 pkgrel=1
 pkgdesc="A Persian (Jalali/Farsi) calendar appindicator"
 arch=('any')
@@ -8,7 +8,7 @@ url="http://183amir.github.io/persian-calendar/"
 license=('GPLv2')
 depends=('python' 'python-khayyam' 'libappindicator-gtk3')
 source=($pkgname-$pkgver.tar.gz::https://github.com/183amir/$pkgname/archive/v$pkgver.tar.gz)
-md5sums=('2b784baf027f6800a14badd9d7186fa7')
+md5sums=('1fd9d83b2aac73880e34e73bdffd739c')
 
 package() {
 	mkdir -p "$pkgdir/opt/persian-calendar"

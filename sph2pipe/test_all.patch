@@ -1,0 +1,19 @@
+*** test_all.pl	2014-08-30 15:09:46.147478592 +0300
+--- test_all2.pl	2014-08-30 15:10:17.407478399 +0300
+***************
+*** 69,75 ****
+  open( my $SH, "| /bin/sh" ) or die "can't start sub-shell /bin/sh: $!";
+  open( my $CKSUMS, ">outfile-md5.list" ) or die "can't write md5 file: $!";
+  
+! my $s2p = "./sph2pipe";
+  my %output_map;
+  
+  for my $i ( 0..$#shn_inputs ) {
+--- 69,75 ----
+  open( my $SH, "| /bin/sh" ) or die "can't start sub-shell /bin/sh: $!";
+  open( my $CKSUMS, ">outfile-md5.list" ) or die "can't write md5 file: $!";
+  
+! my $s2p = "../sph2pipe";
+  my %output_map;
+  
+  for my $i ( 0..$#shn_inputs ) {

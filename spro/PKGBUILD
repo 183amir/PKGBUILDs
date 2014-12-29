@@ -1,0 +1,29 @@
+# Maintainer: Moritz Maxeiner <moritz@ucworks.org>
+pkgname=spro
+pkgver=4.0.1
+_pkgver=4.0
+pkgrel=1
+pkgdesc="SPro is a free speech signal processing toolkit which provides runtime commands implementing standard feature extraction algorithms for speech related applications and a C library to implement new algorithms and to use SPro files within your own programs."
+arch=('i686' 'x86_64')
+url="http://www.irisa.fr/metiss/guig/spro/index.html"
+license=('GPLv2')
+# depends=('gcc44')
+options=('staticlibs')
+source=(http://www.irisa.fr/metiss/guig/spro/spro-4.0.1/spro-$pkgver.tar.gz)
+md5sums=('SKIP')
+
+build()
+{
+
+  cd "$srcdir/spro-$_pkgver"
+  ./configure CFLAGS="-lm" --prefix="$pkgdir/usr"
+  make
+}
+
+package()
+{
+  cd "$srcdir/spro-$_pkgver"
+  make install
+  install -D -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+  # cp libspro.a "${pkgdir}/usr/lib"
+}

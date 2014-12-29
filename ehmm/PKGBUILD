@@ -1,0 +1,42 @@
+# $Id$
+# Maintainer:
+# Contributor: Amir Mohammadi <183.amir@gmail.com>
+
+pkgname=ehmm
+pkgver=2.1
+pkgrel=4
+pkgdesc="An HMM labeler"
+arch=('i686' 'x86_64')
+url="http://festvox.org/download.html"
+license=('custom')
+# depends=('')
+# options=('')
+source=('https://raw.githubusercontent.com/marytts/marytts/master/lib/external/ehmm.tar.gz'
+        LICENSE)
+md5sums=('SKIP'
+         'SKIP')
+
+build() {
+  cd $srcdir/$pkgname
+  make
+}
+
+package() {
+  
+  install -D -m644 LICENSE \
+    "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+  
+  cd $srcdir/$pkgname
+  mkdir -p "$pkgdir"/opt/"$pkgname/bin"
+  install -m755 -t "$pkgdir"/opt/"$pkgname"/bin bin/[a-z]*
+  mkdir -p "$pkgdir"/opt/"$pkgname/scripts"
+  install -m755 -t "$pkgdir"/opt/"$pkgname"/scripts scripts/[a-z]*
+  mkdir -p "$pkgdir"/opt/"$pkgname/etc"
+  install -m644 -t "$pkgdir"/opt/"$pkgname"/etc etc/[a-z]*
+  mkdir -p "$pkgdir"/opt/"$pkgname/src"
+  install -m644 -t "$pkgdir"/opt/"$pkgname"/src src/[a-z]*
+  install -m644 common_make_rules "$pkgdir"/opt/"$pkgname"
+  install -m644 Makefile "$pkgdir"/opt/"$pkgname"
+  install -m644 README "$pkgdir"/opt/"$pkgname"
+
+}
