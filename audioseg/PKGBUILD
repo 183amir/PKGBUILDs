@@ -1,28 +1,28 @@
 # Maintainer: Moritz Maxeiner <moritz@ucworks.org>
 pkgname=audioseg
-pkgver=1.1.1
-_pkgver=1.1
+pkgver=1.2.2
+# _pkgver=1.2
 pkgrel=1
 pkgdesc="AudioSeg is a toolkit dedicated to audio segmentation and classification of audio streams. The toolkit implements standard reference algorithms such as energy-based silence detection, BIC segmentation and clustering as well as GMM/HMM classification."
 arch=('i686' 'x86_64')
 url="http://audioseg.gforge.inria.fr/"
 license=('GPLv2')
-depends=('spro')
+depends=('spro' 'gsl')
 options=('staticlibs')
-source=(https://gforge.inria.fr/frs/download.php/file/2175/audioseg-$pkgver.tar.gz)
-md5sums=('SKIP')
+source=(https://gforge.inria.fr/frs/download.php/file/31320/audioseg-$pkgver.tar.gz)
+md5sums=('3668f4d4bf92d285b44c8898896991dc')
 
 build()
 {
 
-  cd "$srcdir/audioseg-$_pkgver"
-  ./configure --prefix=/usr --with-spro=/usr
+  cd "$srcdir/audioseg-$pkgver"
+  ./configure CFLAGS="-lm" --prefix=/usr --with-spro=/usr
   make
 }
 
 package()
 {
-  cd "$srcdir/audioseg-$_pkgver"
+  cd "$srcdir/audioseg-$pkgver"
   make prefix="$pkgdir/usr" install
   install -D -m644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
 }
