@@ -8,7 +8,7 @@ pkgdesc="A suite of speech signal processing tools."
 arch=('i686' 'x86_64')
 url="http://sp-tk.sourceforge.net/"
 license=('BSD')
-depends=('glibc')
+depends=('glibc' 'tcsh')
 optdepends=('libx11: for XY-plotter' 'tcsh: for helper scripts')
 source=(http://downloads.sourceforge.net/sp-tk/SPTK-$pkgver.tar.gz ${pkgname}.sh)
 
