@@ -1,121 +1,73 @@
 # Maintainer: Moritz Maxeiner <moritz@ucworks.org>
-pkgname=("hts" "hts-docs")
-pkgbase=hts
+pkgname=hts
+pkgver=2.3beta
 _htkver=3.4.1
-pkgver=2.2
-pkgrel=3
-arch=("i686" "x86_64")
+pkgrel=1
+pkgdesc="Modified version (patch) of the Hidden Markov Model Toolkit (htk)."
+arch=('i686' 'x86_64')
 url="http://hts.sp.nitech.ac.jp/"
-license=("custom")
-makedepends=("wget" "patch")
-options=("!makeflags")
-source=("http://hts.sp.nitech.ac.jp/archives/${pkgver}/HTS-${pkgver}_for_HTK-${_htkver}.tar.bz2"
-        "http://hts.sp.nitech.ac.jp/archives/${pkgver}/HTS_Document.pdf")
-sha256sums=("85437fed4d4e19d21f5f8f198bb476252e86a2cf4328b0c7c399dce326a68e0b"
-            "d304784ae7d0f3dfd2beac32df6a3a92ef36bce4ae1027abed0b1468c75b4139")
-
-files_exist() {
-  local f; for f in "$@"; do [[ -e "$i" ]] || return; done
-}
-
-download() {
-  cd "$startdir"
-
-  local url_base="http://htk.eng.cam.ac.uk/ftp/software"
-  local -a urls=("$url_base" "${url_base}/hdecode" "$url_base" "$url_base")
-  local -a files=("HTK-${_htkver}.tar.gz" "HDecode-${_htkver}.tar.gz"
-                  "htkbook.pdf.gz" "HTK-samples-3.4.1.tar.gz")
-  local -a sha256sums=("42297b036ce3a47adeab26aaa42f51ac4b370ead7f53bab75fd27a52d38ae5ac"
-                       "9517b25a91200e3e84ebed0d615f73715196dbfaf32ef854c2e964442175bee5"
-                       "f329fc890e7365bc8a233c0f10851367cb2a6af4477f5004a5aa21cef94f1afc"
-                       "9325757be07ce4d7cea8b0ecedcf534ba43b330b1a230d45e6f24f95a51cdd32")
-  local username
-  local password
-
-  printf "%s\n"   "Please put the necessary files:"
-  printf "\t%s\n" "${files[@]}"
-  printf "%s\n"   "in the folder ${startdir} and press [ENTER]."
-  printf "%s"     "If you do not have them, press [ENTER] and they will be downloaded for you..."
-  read
-  printf "\n"
-
-  for ((i=0;i<"${#files[@]}";i++)); do
-    if [[ ! -e "${files[$i]}" ]]; then
-      if [[ ! "$username" || ! "$password" ]]; then
-        # HTK account necessary to download HTK source code
-        printf "%s\n" "You need an HTK account to download the source code HTS uses."
-        printf "%s\n" "You can create such an account here: http://htk.eng.cam.ac.uk/register.shtml"
-        printf "%s\n" "Please proceed only if you have one, the build will fail otherwise!"
-        printf "\n"
-        read -p "Please enter your HTK username: " username
-        read -p "Please enter your HTK password: " password
-      fi
-      wget --user="$username" --password="$password" "${urls[$i]}/${files[$i]}"
-    fi
-    sha256sum -c <<<"${sha256sums[$i]} ${files[$i]}"
-    cp "${files[$i]}" "$srcdir"
-    if [[ "${files[$i]}" = *.tar.?z ]]; then
-      tar xfva "${srcdir}/${files[$i]}" -C "$srcdir"
-    elif [[ "${files[$i]}" = !(*.tar).?z ]]; then
-      gunzip "${srcdir}/${files[$i]}"
-    fi
-  done
-}
+license=('custom')
+depends=('libx11')
+makedepends=('wget' 'patch' 'gcc-fortran')
+conflicts=(htk)
+source=(http://hts.sp.nitech.ac.jp/archives/$pkgver/HTS-${pkgver}_for_HTK-$_htkver.tar.bz2)
+md5sums=('1d205f7904da260fbd35a2db1bcce5b4')
 
 build() {
-  download
+  cd $srcdir/../
 
-  cd "${srcdir}/htk"
+  echo "Please put the necessary files 'HTK-$_htkver.tar.gz' and 'HDecode-$_htkver.tar.gz' in the folder $srcdir/../ and press [ENTER]."
+  echo -n "If you do not have them, press [ENTER] and they will be downloaded for you..."
+  read
+  echo
+
+  if [ ! -e HTK-$_htkver.tar.gz ] || [ ! -e HDecode-$_htkver.tar.gz ]; then
+    # HTK account necessary to download HTK source code
+	echo "You need an HTK account to download the source code HTS uses."
+    echo "You can create such an account here: http://htk.eng.cam.ac.uk/register.shtml"
+    echo "Please proceed only if you have one, the build will fail otherwise!"
+    echo
+    echo -n "Please enter your HTK username: "
+    read username
+    echo -n "Please enter your HTK password: "
+    read password
+
+    # Get the htk source code
+    wget --user=$username --password=$password http://htk.eng.cam.ac.uk/ftp/software/HTK-$_htkver.tar.gz
+	wget --user=$username --password=$password http://htk.eng.cam.ac.uk/ftp/software/hdecode/HDecode-$_htkver.tar.gz
+  fi
+  
+  if ! (md5sum -c <<< "b3fc12006b0af12f59cd573c07aa4c1d HTK-$_htkver.tar.gz"); then
+    echo "HTK md5sum wrong"
+    return 1
+  fi
+  if ! (md5sum -c <<< "4e332a7fea6db58751cec878b80c3575 HDecode-$_htkver.tar.gz"); then
+    echo "HDecode md5sum wrong"
+    return 1
+  fi
+
+  cp HTK-$_htkver.tar.gz $srcdir/
+  cp HDecode-$_htkver.tar.gz $srcdir/
+  cd $srcdir
+  bsdtar -xf HTK-$_htkver.tar.gz
+  bsdtar -xf HDecode-$_htkver.tar.gz
+  cd htk
   echo "Patching HTK source code to HTS..."
-  patch -p1 -d . -i "${srcdir}/HTS-${pkgver}_for_HTK-${_htkver}.patch"
-
-  sed -i 's#^ \{8\}#\t#' "${srcdir}/htk/HLMTools/Makefile.in"
+  patch -p1 -t -d . < "./../HTS-${pkgver}_for_HTK-$_htkver.patch"
 
   echo "Beginning build..."
-  # http://hts.sp.nitech.ac.jp/hts-users/spool/2011/msg00391.html
-  CFLAGS="${CFLAGS/-D_FORTIFY_SOURCE=2/}" ./configure \
-    --prefix=/usr \
-    --enable-hdecode \
-    --enable-hlmtools
+  CFLAGS="${CFLAGS/-D_FORTIFY_SOURCE=2/}" ./configure --prefix=/usr
   make
 }
 
-package_hts() {
-  pkgdesc="HMM-based Speech Synthesis System"
-  arch=("i686" "x86_64")
-  depends=("libx11" "gcc-libs")
-  provides=("htk=${_htkver}")
-  conflicts=("htk")
-
-  cd "${srcdir}/htk"
-  make prefix="${pkgdir}/usr" install
+package() {
+  cd "$srcdir/htk"
+  make prefix="$pkgdir/usr" install
 
   # The HTK license applying to the package
-  install -D -m644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE-HTK"
+  install -D -m644 LICENSE ${pkgdir}/usr/share/licenses/$pkgname/LICENSE-HTK
   # The HDecode extension license
-  install -D -m644 HTKLVRec/HDecode-license.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE-HDecode"
+  install -D -m644 HTKLVRec/HDecode-license.txt ${pkgdir}/usr/share/licenses/${pkgname}/LICENSE-HDecode
   # The HTS license applying to the patch
-  install -D -m644 "${srcdir}/COPYING" "${pkgdir}/usr/share/licenses/${pkgname}/COPYING-HTS"
+  install -D -m644 $srcdir/COPYING ${pkgdir}/usr/share/licenses/$pkgname/COPYING-HTS
 }
-
-package_hts-docs() {
-  pkgdesc="Documentation and samples for HTS, the HMM-based Speech Synthesis System."
-  arch=("any")
-  optdepends=("hts: main program"
-              "perl: example scripts")
-  provides=("htk-docs=${_htkver}")
-  conflicts=("htk-docs")
-
-  cd "$srcdir"
-  install -m755 -d "${pkgdir}/usr/share/${pkgname}/doc"
-  install -m644 -t "${pkgdir}/usr/share/${pkgname}/doc" "htkbook.pdf" "HTS_Document.pdf"
-
-  cp -a "samples" "${pkgdir}/usr/share/${pkgname}"
-  find "${pkgdir}/usr/share/${pkgname}" -type f -execdir chmod 644 '{}' \;
-  find "${pkgdir}/usr/share/${pkgname}" -type d -execdir chmod 755 '{}' \;
-
-  install -m644 -D "samples/LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE-HTK"
-  install -m644 -D "COPYING" "${pkgdir}/usr/share/licenses/${pkgname}/COPYING-HTS"
-}
-
-# vim:set ts=2 sw=2 et:

@@ -1,6 +1,6 @@
 # Maintainer: Moritz Maxeiner <moritz@ucworks.org>
 pkgname=hts-engine
-pkgver=1.05
+pkgver=1.09
 pkgrel=1
 pkgdesc="Engine to synthesize speech waveform from HMMs trained by hts."
 arch=('i686' 'x86_64')
@@ -9,7 +9,8 @@ license=('BSD')
 depends=('glibc')
 options=('staticlibs')
 source=(http://downloads.sourceforge.net/$pkgname/hts_engine_API-$pkgver.tar.gz)
-md5sums=('SKIP')
+md5sums=('e5b280c43dbffafa37aeb8fdaeadae25')
+sha256sums=('b35a9c7c6868e15be0fbfb91c7a3696cf623d82f2d2058d2fa4362c289b62895')
 
 build()
 {
